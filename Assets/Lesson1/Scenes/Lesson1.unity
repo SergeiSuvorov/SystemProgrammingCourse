@@ -245,8 +245,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cancelButton: {fileID: 1280701109}
   _startButton: {fileID: 1673136017}
-  _secondsCount: 1
-  _frameCount: 60
+  _secondsCount: 10
+  _frameCount: 600
 --- !u!4 &352363716
 Transform:
   m_ObjectHideFlags: 0
