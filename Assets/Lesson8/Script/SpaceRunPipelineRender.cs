@@ -7,6 +7,7 @@ namespace CustomRenderPipeline
 {
     public class SpaceRunPipelineRender : RenderPipeline
     {
+        private CameraRenderer cameraRenderer = new CameraRenderer();
         private ScriptableRenderContext _context;
         private Camera _camera;
         private CullingResults _cullingResults;
@@ -62,6 +63,7 @@ namespace CustomRenderPipeline
         {
             foreach (var camera in cameras)
             {
+                //cameraRenderer.Render(context, camera);
                 Render(context, camera);
             }
         }
@@ -84,7 +86,7 @@ namespace CustomRenderPipeline
             _context.SetupCameraProperties(_camera);
             _commandBuffer.ClearRenderTarget(true, true, Color.clear);
             _commandBuffer.BeginSample(bufferName);
-            //ExecuteCommandBuffer();
+
             _context.ExecuteCommandBuffer(_commandBuffer);
             _commandBuffer.Clear();
 
