@@ -2,17 +2,14 @@
 {
     Properties
     {
-         _Color ("Color", Color) = (1,1,1,1)
+        _Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
-		
-		
     }
     SubShader
     {
         Tags
 	   { 
 	   "RenderType"="Opaque" 
-	   //"LightMode"="ForwardBase"
 	   }
 	   LOD 200
 
