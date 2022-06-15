@@ -21,18 +21,18 @@ public class AsteroidJob : MonoBehaviour
         public float SpinAngle;
         public float Ang;
         public float Scale;
-        public float Offset;
+        public float Radius;
     }
 
     [SerializeField] private Mesh _mesh;
     [SerializeField] private Material _material;
-    [SerializeField, Range(1, 8)] private int _depth = 4;
+    [SerializeField, Range(1, 20)] private int _depth = 4;
     //[SerializeField, Range(0, 360)] private int _speedRotation = 80;
     [SerializeField, Range(0, 1)] private float _speedRotation = .125f;    [SerializeField, Range(0, 360)] private int _angleTurn = 80;
     [SerializeField, Range(0, 360)] private int _radiusOffset = 4;
-    //[SerializeField] private int _radius = 8;
+    [SerializeField] private int _radius = 8;
 
-    private const float _radius =5.75f;
+   // private const float _radius =5.75f;
     private const float _scaleBias = .5f;
     private const int _childCount = 5;
 
@@ -78,9 +78,9 @@ public class AsteroidJob : MonoBehaviour
 
             part.SpinAngle += SpinAngleDelta;
             part.Ang += SpinAngleDelta ;
-            part.WorldPosition = _radius * (new Vector3(Mathf.Sin(part.Ang * Mathf.Deg2Rad), Mathf.Cos(part.Ang * Mathf.Deg2Rad), 0f));
-            part.WorldRotation = parent.WorldRotation * (part.Rotation * Quaternion.Euler(0f, part.SpinAngle, 0f));
-            part.WorldPosition = (_radius + part.Offset) * (new Vector3(Mathf.Sin(part.Ang * Mathf.Deg2Rad), Mathf.Cos(part.Ang * Mathf.Deg2Rad), 0f));
+            //part.WorldPosition = _radius * (new Vector3(Mathf.Sin(part.Ang * Mathf.Deg2Rad), Mathf.Cos(part.Ang * Mathf.Deg2Rad), 0f));
+            //part.WorldRotation = parent.WorldRotation * (part.Rotation * Quaternion.Euler(0f, part.SpinAngle, 0f));
+            part.WorldPosition = (part.Radius) * (new Vector3(Mathf.Sin(part.Ang * Mathf.Deg2Rad), Mathf.Cos(part.Ang * Mathf.Deg2Rad), 0f));
             part.WorldRotation = parent.WorldRotation * (part.Rotation * Quaternion.Euler(0f, part.SpinAngle, 0f));
 
             //part.WorldPosition = parent.WorldPosition + parent.WorldRotation * (_positionOffset * Scale * part.Direction);
@@ -162,7 +162,7 @@ public class AsteroidJob : MonoBehaviour
             Rotation = _rotations[childIndex],
             Ang = ang,
             Scale = Random.value,
-            Offset = Random.value * _radiusOffset
+            Radius = Random.value * _radiusOffset+_radius
         };
     }
 
