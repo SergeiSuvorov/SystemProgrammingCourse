@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ProcedureFractal : MonoBehaviour
 {
-    //unity_ObjectToWorld._m30_m31_m32_m33 = float4(0.0, 0.0, 0.0, 1.0);
 
     struct FractalPart
     {
@@ -14,6 +13,7 @@ public class ProcedureFractal : MonoBehaviour
         public Quaternion WorldRotation;
         public float SpinAngle;
     }
+
     [SerializeField] private Mesh _mesh;
     [SerializeField] private Material _material;
     [SerializeField, Range(1, 8)] private int _depth = 4;

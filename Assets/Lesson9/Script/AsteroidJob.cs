@@ -1,38 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst;
+﻿using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using static Unity.Mathematics.math;
-using float4x4 = Unity.Mathematics.float4x4;
 using quaternion = Unity.Mathematics.quaternion;
 
 public class AsteroidJob : MonoBehaviour
 {
-    //unity_ObjectToWorld._m30_m31_m32_m33 = float4(0.0, 0.0, 0.0, 1.0);
-
-    struct FractalPart
-    {
-        public Vector3 Direction;
-        public Quaternion Rotation;
-        public Vector3 WorldPosition;
-        public Quaternion WorldRotation;
-        public float SpinAngle;
-        public float Ang;
-        public float Scale;
-        public float Radius;
-    }
 
     [SerializeField] private Mesh _mesh;
     [SerializeField] private Material _material;
     [SerializeField, Range(1, 20)] private int _depth = 4;
-    //[SerializeField, Range(0, 360)] private int _speedRotation = 80;
-    [SerializeField, Range(0, 1)] private float _speedRotation = .125f;    [SerializeField, Range(0, 360)] private int _angleTurn = 80;
+
+    [SerializeField, Range(0, 1)] private float _speedRotation = .125f;    [SerializeField, Range(0, 360)] private int _angleTurn = 80;
     [SerializeField, Range(0, 360)] private int _radiusOffset = 4;
     [SerializeField] private int _radius = 8;
 
-   // private const float _radius =5.75f;
     private const float _scaleBias = .5f;
     private const int _childCount = 5;
 
@@ -52,13 +35,26 @@ public class AsteroidJob : MonoBehaviour
 
 
     private static readonly quaternion[] _rotations =
-            {
+    {
         quaternion.identity,
         quaternion.RotateZ(.5f * PI),
         quaternion.RotateZ(-.5f * PI),
         quaternion.RotateX(.5f * PI),
         quaternion.RotateX(-.5f * PI),
-    };
+    };
+
+    struct FractalPart
+    {
+        public Vector3 Direction;
+        public Quaternion Rotation;
+        public Vector3 WorldPosition;
+        public Quaternion WorldRotation;
+        public float SpinAngle;
+        public float Ang;
+        public float Scale;
+        public float Radius;
+    }
+
 
     [BurstCompile(CompileSynchronously = true)]
     private struct UpdateFractalLevelJob : IJobFor
@@ -78,28 +74,12 @@ public class AsteroidJob : MonoBehaviour
 
             part.SpinAngle += SpinAngleDelta;
             part.Ang += SpinAngleDelta ;
-            //part.WorldPosition = _radius * (new Vector3(Mathf.Sin(part.Ang * Mathf.Deg2Rad), Mathf.Cos(part.Ang * Mathf.Deg2Rad), 0f));
-            //part.WorldRotation = parent.WorldRotation * (part.Rotation * Quaternion.Euler(0f, part.SpinAngle, 0f));
             part.WorldPosition = (part.Radius) * (new Vector3(Mathf.Sin(part.Ang * Mathf.Deg2Rad), Mathf.Cos(part.Ang * Mathf.Deg2Rad), 0f));
             part.WorldRotation = parent.WorldRotation * (part.Rotation * Quaternion.Euler(0f, part.SpinAngle, 0f));
-
-            //part.WorldPosition = parent.WorldPosition + parent.WorldRotation * (_positionOffset * Scale * part.Direction);
             Parts[index] = part;
             Matrices[index] = Matrix4x4.TRS(part.WorldPosition, part.WorldRotation, part.Scale * Vector3.one);
         }
-
-
     }
-
-    //private static readonly Quaternion[] _rotations =
-    //{
-    //    Quaternion.identity,
-    //    Quaternion.Euler(.0f, .0f, 90.0f),
-    //    Quaternion.Euler(.0f, .0f, -90.0f),
-    //    Quaternion.Euler(90.0f, .0f, .0f),
-    //    Quaternion.Euler(-90.0f, .0f, .0f)
-    //};
-
     private void OnEnable()
     {
         _parts = new NativeArray<FractalPart>[_depth];
@@ -155,7 +135,7 @@ public class AsteroidJob : MonoBehaviour
     private FractalPart CreatePart(int levelIndex, int childIndex)
     {
         var ang = (360 / ((_depth-1) * _childCount)) * ((levelIndex ) * _childCount + (childIndex ));
-        //Debug.Log($"( Ang { ang}  levelIndex {levelIndex}  childIndex {childIndex})");
+
         return new FractalPart
         {
             Direction = _directions[childIndex],
@@ -165,8 +145,6 @@ public class AsteroidJob : MonoBehaviour
             Radius = Random.value * _radiusOffset+_radius
         };
     }
-
-
 
     private void Update()
     {

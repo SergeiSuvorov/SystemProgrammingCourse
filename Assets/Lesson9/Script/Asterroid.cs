@@ -1,21 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst;
-using Unity.Collections;
-using Unity.Jobs;
-using UnityEngine;
-using static Unity.Mathematics.math;
-using float4x4 = Unity.Mathematics.float4x4;
-using quaternion = Unity.Mathematics.quaternion;
+﻿using UnityEngine;
 
 public class Asterroid : MonoBehaviour
 {
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
-
-    [SerializeField, Range(1, 8)] private int _depth = 4;
+    [SerializeField, Range(1, 8)] private int _depth = 4;
     [SerializeField, Range(1, 360)] private int _rotationSpeed;
-
     [SerializeField, Range(1, 360)] private int _angleOfset;
     private FractalPart[][] _parts;
 
@@ -47,7 +37,6 @@ public class Asterroid : MonoBehaviour
         Quaternion.Euler(-90f, 0f, 0f),
     };
 
-
     private void OnEnable()
     {
         _parts = new FractalPart[_depth][];
@@ -71,7 +60,7 @@ public class Asterroid : MonoBehaviour
             }
         }
     }
-    // Update is called once per frame
+
     private void Update()
     {
         var deltaRotation = Quaternion.Euler(0f, _rotationSpeed * Time.deltaTime, 0f);

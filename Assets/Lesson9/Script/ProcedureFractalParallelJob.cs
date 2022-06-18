@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst;
+﻿using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using static Unity.Mathematics.math;
-using float4x4 = Unity.Mathematics.float4x4;
-using quaternion = Unity.Mathematics.quaternion;
 
 public class ProcedureFractalParallelJob : MonoBehaviour
 {
@@ -75,9 +71,6 @@ public class ProcedureFractalParallelJob : MonoBehaviour
             Matrices[index] = Matrix4x4.TRS(part.WorldPosition, part.WorldRotation, Scale * Vector3.one);
         }
     }
-
-
-
 
     private void OnEnable()
     {

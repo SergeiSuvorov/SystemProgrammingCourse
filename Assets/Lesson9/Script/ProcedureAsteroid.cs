@@ -2,7 +2,6 @@
 
 public class ProcedureAsteroid : MonoBehaviour
 {
-    //unity_ObjectToWorld._m30_m31_m32_m33 = float4(0.0, 0.0, 0.0, 1.0);
 
     struct FractalPart
     {
@@ -30,6 +29,7 @@ public class ProcedureAsteroid : MonoBehaviour
     private ComputeBuffer[] _matricesBuffers;
     private static readonly int _matricesId = Shader.PropertyToID("_Matrices");
     private static MaterialPropertyBlock _propertyBlock;
+
     private static readonly Vector3[] _directions =
     {
         Vector3.up,
@@ -124,10 +124,9 @@ public class ProcedureAsteroid : MonoBehaviour
         _parts[0][0] = rootPart;
         _matrices[0][0] = Matrix4x4.TRS(rootPart.WorldPosition,
         rootPart.WorldRotation, Vector3.one);
-        //var scale = 1.0f/ _scaleBias;
+
         for (var li = 0; li < _parts.Length; li++)
         {
-            //scale *= _scaleBias;
             var parentParts = _parts[li];
             if (li!=0)
             {
