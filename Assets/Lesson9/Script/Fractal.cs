@@ -7,7 +7,8 @@ public class Fractal : MonoBehaviour
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
 
-    [SerializeField, Range(1, 8)] private int _depth = 4;
+    [SerializeField, Range(1, 8)] private int _depth = 4;
+
     [SerializeField, Range(1, 360)] private int _rotationSpeed;
     private FractalPart[][] _parts;
     
@@ -20,7 +21,8 @@ public class Fractal : MonoBehaviour
         public Vector3 Direction;
         public Quaternion Rotation;
         public Transform Transform;
-    }
+    }
+
 
     private static readonly Vector3[] _directions = new Vector3[]
     {
@@ -40,25 +42,6 @@ public class Fractal : MonoBehaviour
         Quaternion.Euler(-90f, 0f, 0f),
     };
 
-    // Start is called before the first frame update
-    //void Start()
-    //{
-    //    name = "Fractal " + _depth;
-    //    if (_depth <= 1)
-    //    {
-    //        return;
-    //    }
-    //    var childA = CreateChild(Vector3.up, Quaternion.identity);
-    //    var childB = CreateChild(Vector3.right, Quaternion.Euler(0f, 0f, -90f));
-    //    var childC = CreateChild(Vector3.left, Quaternion.Euler(0f, 0f, 90f));
-    //    var childD = CreateChild(Vector3.forward, Quaternion.Euler(90f, 0f, 0f));
-    //    var childE = CreateChild(Vector3.back, Quaternion.Euler(-90f, 0f, 0f));
-    //    childA.transform.SetParent(transform, false);
-    //    childB.transform.SetParent(transform, false);
-    //    childC.transform.SetParent(transform, false);
-    //    childD.transform.SetParent(transform, false);
-    //    childE.transform.SetParent(transform, false);
-    //}
     private void OnEnable()
     {
         _parts = new FractalPart[_depth][];
@@ -105,17 +88,10 @@ public class Fractal : MonoBehaviour
                 part.Transform.localPosition =   parentTransform.localPosition + parentTransform.localRotation * (_positionOffset * part.Transform.localScale.x *  part.Direction);
                 levelParts[fpi] = part;
             }
-        }
+        }
+
     }
-    private Fractal CreateChild(Vector3 direction, Quaternion rotation)
-    {
-        var child = Instantiate(this);
-        child._depth = _depth - 1;
-        child.transform.localPosition = _positionOffset * direction;
-        child.transform.localRotation = rotation;
-        child.transform.localScale = _scaleBias * Vector3.one;
-        return child;
-    }
+
     private FractalPart CreatePart(int levelIndex, int childIndex, float scale)
     {
 
@@ -129,6 +105,8 @@ public class Fractal : MonoBehaviour
             Direction = _directions[childIndex],
             Rotation = _rotations[childIndex],
             Transform = go.transform
-        };
-    }
+        };
+
+    }
+
 }
