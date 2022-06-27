@@ -15,8 +15,9 @@ Shader "Unlit/Ring"
     {
         Tags
 		{ 
-			"Queue" = "Transparent" 
-			"RenderType" = "Transparent" 	
+			"Queue" = "Transparent+5" 
+			//"RenderType" = "Transparent" 	
+			"RenderType"="Opaque" 
 		}
         LOD 100
 

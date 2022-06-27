@@ -229,7 +229,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &533040738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,7 +244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mesh: {fileID: 4300000, guid: b7a8ecd7602610a4bbb510bdb9523c4f, type: 3}
   _material: {fileID: 2100000, guid: b79c8c2ffda65b7408bb6d8f35ed31f4, type: 2}
-  _depth: 3
+  _depth: 5
   _speedRotation: 1
   _angleTurn: 80
   _radiusOffset: 1
@@ -601,7 +601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2106885071
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -28,6 +28,9 @@ public class ShipController : NetworkMovableObject
     private Vector3 currentPositionSmoothVelocity;
 
     protected override float speed => _shipSpeed;
+    private SpaceShipSettings _spaceShipSettings;
+
+   
 
     public string PlayerName
     {
@@ -40,25 +43,43 @@ public class ShipController : NetworkMovableObject
         playerLabel.DrawLabel();
     }
 
+    void Awake()
+    {
+        var collider = GetComponent<Collider>();
+        if (collider != null)
+            collider.enabled = false;
+
+       
+        var networkManager = (SolarSystemNetworkManager)NetworkManager.singleton;
+        Debug.Log(networkManager.PlayerName == string.Empty);
+
+    }
     public override void OnStartAuthority()
     {
+
+        base.OnStartAuthority();
+
+        var collider = GetComponent<Collider>();
+        if (collider != null)
+            collider.enabled = true;
+
         _rigidbody = GetComponent<Rigidbody>();
         if (_rigidbody == null)
             return;
 
+        _uiManager = FindObjectOfType<UiManager>();
+        _uiManager.Init(this);
+
         var networkManager = (SolarSystemNetworkManager)NetworkManager.singleton;
+        PlayerName = networkManager.PlayerName == string.Empty ? gameObject.name : networkManager.PlayerName;
         gameObject.name = networkManager.PlayerName == string.Empty ? gameObject.name : networkManager.PlayerName;
         Subscribe();
         _cameraOrbit = FindObjectOfType<CameraOrbit>();
         _cameraOrbit.Initiate(_cameraAttach == null ? transform : _cameraAttach);
 
-        base.OnStartAuthority();
+        Debug.Log(networkManager.PlayerName == string.Empty);
 
-        _uiManager = FindObjectOfType<UiManager>();
-        _uiManager.Init(this);
-        //Subscribe();
-
-        onStartAuthority?.Invoke();
+            onStartAuthority?.Invoke();
     }
 
     [ClientCallback]
@@ -69,18 +90,17 @@ public class ShipController : NetworkMovableObject
 
     protected override void HasAuthorityMovement()
     {
-        var spaceShipSettings = SettingsContainer.Instance?.SpaceShipSettings;
-        if (spaceShipSettings == null)
+        if (_spaceShipSettings == null)
             return;
 
         var isFaster = Input.GetKey(KeyCode.LeftShift);
-        var speed = spaceShipSettings.ShipSpeed;
-        var faster = isFaster ? spaceShipSettings.Faster : 1.0f;
+        var speed = _spaceShipSettings.shipSpeed;
+        var faster = isFaster ? _spaceShipSettings.faster : 1.0f;
 
-        _shipSpeed = Mathf.Lerp(_shipSpeed, speed * faster, spaceShipSettings.Acceleration);
+        _shipSpeed = Mathf.Lerp(_shipSpeed, speed * faster, _spaceShipSettings.acceleration);
 
-        var currentFov = isFaster ? spaceShipSettings.FasterFov : spaceShipSettings.NormalFov;
-        _cameraOrbit.SetFov(currentFov, spaceShipSettings.ChangeFovSpeed);
+        var currentFov = isFaster ? _spaceShipSettings.fasterFov : _spaceShipSettings.normalFov;
+        _cameraOrbit.SetFov(currentFov, _spaceShipSettings.changeFovSpeed);
 
         var velocity = _cameraOrbit.transform.TransformDirection(Vector3.forward) * _shipSpeed;
         _rigidbody.velocity = velocity * (_updatePhase == UpdatePhase.FixedUpdate ? Time.fixedDeltaTime : Time.deltaTime);
@@ -94,6 +114,7 @@ public class ShipController : NetworkMovableObject
         if (Input.GetKey(KeyCode.A))
         {
             TrigerExecute();
+            CmdTrigerExecute();
         }
 
         if (isServer)
@@ -120,6 +141,23 @@ public class ShipController : NetworkMovableObject
         onStartAuthority = null;
         onGameEnd = null;
     }
+
+    [Server]
+    public void Init(SpaceShipSettings spaceShipSettings)
+    {
+        if (isServer)
+        {
+            _spaceShipSettings = spaceShipSettings;
+            RpcInit(spaceShipSettings);
+        }
+    }
+
+    [ClientRpc]
+    public void RpcInit(SpaceShipSettings spaceShipSettings)
+    {
+        _spaceShipSettings = spaceShipSettings;
+    }
+
 
     #region SubscribeMethod
     private void Subscribe()
@@ -262,6 +300,7 @@ public class ShipController : NetworkMovableObject
     private void CmdUpdateName(string name)
     {
         _serverPlayerName = name;
+        gameObject.name = name;
     }
     public void UpdateNameOwner()
     {
@@ -270,19 +309,30 @@ public class ShipController : NetworkMovableObject
     #endregion
 
     #region TrigerMethod
+
     //[ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
-        var networkMovableObject = other.gameObject.GetComponent<NetworkMovableObject>();
-        if (networkMovableObject != null && (networkMovableObject is CristalController == false))
+        var planet = other.gameObject.GetComponent<PlanetOrbit>();
+        if (planet != null )
         {
-            TrigerExecute();
+           // TrigerExecute();
+            CmdTrigerExecute();
         }
     }
 
-    //[ServerCallback]
+    [ServerCallback]
     private void TrigerExecute()
     {
+        Debug.Log("TrigerExecute");
+        var networkManager = (SolarSystemNetworkManager)NetworkManager.singleton;
+        networkManager.SetNewPositionToPlayer(gameObject);
+    }
+
+    [Command]
+    private void CmdTrigerExecute()
+    {
+        Debug.Log("TrigerExecute");
         var networkManager = (SolarSystemNetworkManager)NetworkManager.singleton;
         networkManager.SetNewPositionToPlayer(gameObject);
     }

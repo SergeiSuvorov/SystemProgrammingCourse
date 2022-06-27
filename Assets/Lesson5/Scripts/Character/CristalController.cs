@@ -4,32 +4,48 @@ using Mirror;
 using Network;
 using UnityEngine;
 
-public class CristalController : NetworkMovableObject
+public class CristalController : NetworkBehaviour
 {
-    protected override float speed => throw new NotImplementedException();
 
-    public override void OnStartAuthority()
+    [SyncVar] protected Vector3 serverPosition;
+    [SyncVar] protected Vector3 serverEulers;
+    public override void OnStartServer()
     {
+       
+        base.OnStartServer();
         var networkManager = (SolarSystemNetworkManager)NetworkManager.singleton;
         networkManager.AddCristalToList(this);
 
-        base.OnStartAuthority();
     }
 
-    protected override void FromOwnerUpdate()
-    {
-        return;
-    }
 
-    protected override void HasAuthorityMovement()
-    {
-        return;
-    }
-
-    protected override void SendToClients()
+    protected  void SendToClients()
     {
         serverPosition = transform.position;
         serverEulers = transform.eulerAngles;
+    }
+
+    private void FixedUpdate()
+    {
+        Movement();
+    }
+
+    protected virtual void Movement()
+    {
+        if (!isServer)
+        {
+            FromSeverUpdate();
+        }
+        else
+        {
+            SendToClients();
+        }
+    }
+    [Client]
+    protected void FromSeverUpdate()
+    {
+        transform.position = serverPosition;
+        transform.rotation = Quaternion.Euler(serverEulers);
     }
 
 
@@ -44,6 +60,7 @@ public class CristalController : NetworkMovableObject
                 CmdTriggerEnter(this, ship);
         }
     }
+
 
     private void ServerTriggerEnter(CristalController cristal, ShipController ship)
     {

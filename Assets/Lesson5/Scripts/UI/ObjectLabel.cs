@@ -7,8 +7,6 @@ using UnityEngine;
         [SerializeField] private Camera _camera;
         private void Start()
         {
-           
-            Debug.Log(name);
             _camera=_camera==null? Camera.main:_camera;
         }
         public void DrawLabel()

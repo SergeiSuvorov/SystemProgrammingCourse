@@ -2,10 +2,10 @@ using Network;
 using UnityEngine;
 using Mirror;
 
-public class PlanetOrbit : NetworkMovableObject
-{
-    protected override float speed => smoothTime;
 
+public class PlanetOrbit : NetworkBehaviour
+{
+    [SerializeField] private GameObject _ringObject;
     [SerializeField] private Vector3 aroundPoint;
     [SerializeField] private float smoothTime = .3f;
     [SerializeField] private float circleInSecond = 1f;
@@ -15,19 +15,141 @@ public class PlanetOrbit : NetworkMovableObject
     [SerializeField] private float rotationSpeed;
     [SerializeField] private ObjectLabel _objectLabel;
     [SerializeField] float radius;
+    
     private float currentAng;
     private Vector3 currentPositionSmoothVelocity;
     private float currentRotationAngle;
+    [SyncVar] private bool _hasRing=false;
+    [SyncVar] private Color _groundColor;
+    [SyncVar] private Color _seaColor;
+    [SyncVar] private Color _mountainColor;
+    [SyncVar] private Color _atmosphereColor;
+    [SyncVar] private Color _planetRingColor;
+    [SyncVar] private bool _hasAtmosphere;
+    [SyncVar] private float _seed;
+    [SyncVar] private string _name;
+
+
 
     private const float circleRadians = Mathf.PI * 2;
 
+    [SyncVar] protected Vector3 serverPosition;
+    [SyncVar] protected Vector3 serverEulers;
+    [SyncVar] protected bool _serverIsReady = true;
+
     private void Start()
     {
-        Initiate(UpdatePhase.FixedUpdate);
         _objectLabel = gameObject.GetComponent<ObjectLabel>();
     }
 
-    protected override void HasAuthorityMovement()
+    public void Init(PlanetData planetData)
+    {
+        if (planetData == null)
+            return;
+
+        radius = planetData.radius;
+        name = planetData.Name;
+        _name = planetData.Name;
+        _groundColor = planetData.planetColorGroup.GroundColor;
+        _hasRing = planetData.hasPlanetRing;
+        _seaColor = planetData.planetColorGroup.SeaColor;
+        _mountainColor = planetData.planetColorGroup.MountainColor;
+        _seed = planetData.seed;
+        _hasAtmosphere = planetData.hasAtmosphere;
+        _atmosphereColor = planetData.AtmosphereColor;
+        _planetRingColor = planetData.PlanetRingColor;
+
+    }
+
+    public override void OnStartAuthority()
+    {
+        if (_ringObject != null)
+        _ringObject.SetActive(_hasRing);
+    }
+    private void FixedUpdate()
+    {
+        Movement();
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        if (_ringObject != null)
+            _ringObject.SetActive(_hasRing);
+
+        name = _name;
+
+        var meshRenderer = GetComponent<MeshRenderer>();
+
+        MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
+   
+        materialPropertyBlock.SetColor("_GroundColor", _groundColor);
+        materialPropertyBlock.SetColor("_SeaColor", _seaColor);
+        materialPropertyBlock.SetColor("_MountainColor", _mountainColor);
+        materialPropertyBlock.SetFloat("_Seed", _seed);
+        materialPropertyBlock.SetColor("_AtmosphereColor", _atmosphereColor);
+
+        if (_hasAtmosphere)
+            materialPropertyBlock.SetFloat("_HasAtmosphere", 1);
+        else
+            materialPropertyBlock.SetFloat("_HasAtmosphere",-1);
+
+        meshRenderer.SetPropertyBlock(materialPropertyBlock);
+    }
+
+    private void ConfigPlanet()
+    {
+        if (_ringObject != null)
+            ConfigRing();
+
+        name = _name;
+
+        var meshRenderer = GetComponent<MeshRenderer>();
+
+        MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
+
+        materialPropertyBlock.SetColor("_GroundColor", _groundColor);
+        materialPropertyBlock.SetColor("_SeaColor", _seaColor);
+        materialPropertyBlock.SetColor("_MountainColor", _mountainColor);
+        materialPropertyBlock.SetFloat("_Seed", _seed);
+        materialPropertyBlock.SetColor("_AtmosphereColor", _atmosphereColor);
+
+        if (_hasAtmosphere)
+            materialPropertyBlock.SetFloat("_HasAtmosphere", 1);
+        else
+            materialPropertyBlock.SetFloat("_HasAtmosphere", -1);
+
+        meshRenderer.SetPropertyBlock(materialPropertyBlock);
+    }
+
+    private void ConfigRing()
+    {
+        _ringObject.SetActive(_hasRing);
+        var meshRenderer = _ringObject.GetComponent<MeshRenderer>();
+        MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
+        materialPropertyBlock.SetColor("_MainColor", _planetRingColor);
+
+        meshRenderer?.SetPropertyBlock(materialPropertyBlock);
+    }
+    protected virtual void Movement()
+    {
+        if (isServer)
+        {
+            ServerMovement();
+        }
+        else
+        {
+            FromSeverUpdate();
+        }
+    }
+
+    [Server]
+    protected  void ServerMovement()
     {
         if (!isServer)
             return;
@@ -47,20 +169,24 @@ public class PlanetOrbit : NetworkMovableObject
         SendToClients();
     }
 
-    protected override void SendToClients()
+    protected  void SendToClients()
     {
         serverPosition = transform.position;
         serverEulers = transform.eulerAngles;
     }
 
-    protected override void FromOwnerUpdate()
+    [Client]
+    protected  void FromSeverUpdate()
     {
         if (!isClient)
             return;
+        //UpdateForNewPlayer();
 
-        transform.position = Vector3.SmoothDamp(transform.position, serverPosition, ref currentPositionSmoothVelocity, speed);
+        transform.position = Vector3.SmoothDamp(transform.position, serverPosition, ref currentPositionSmoothVelocity, smoothTime);
         transform.rotation = Quaternion.Euler(serverEulers);
+
     }
+
 
     private void OnGUI()
     {

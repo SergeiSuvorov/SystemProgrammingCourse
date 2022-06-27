@@ -3,20 +3,23 @@ using Mirror;
 
 public class CristalSpawner : NetworkBehaviour
 {
-    [SerializeField]  private CristalController _cristalPrefab;
-    [SerializeField]  private int _cristalCount;
-    public override void OnStartServer()
+
+    public static void Spawn(SpawnSettings spawnSettins)
     {
-        base.OnStartServer();
-
-        for (int i = 0; i < _cristalCount; i++)
+        var cristalPrefab = spawnSettins.StarPrefab;
+        var cristalCount = spawnSettins.StarCount;
+        var cristalSpawnZoneMin = spawnSettins.StarSpawnZoneMin;
+        var cristalSpawnZoneMax = spawnSettins.StarSpawnZoneMax;
+        for (int i = 0; i < cristalCount; i++)
         {
-            GameObject cristalInstance = Instantiate(_cristalPrefab.gameObject);
 
+            int xPos = Random.Range(-1, 2) * Random.Range(cristalSpawnZoneMin, cristalSpawnZoneMax);
+            int yPos = Random.Range(-1, 2) * Random.Range(cristalSpawnZoneMin, cristalSpawnZoneMax);
+            int zPos = Random.Range(-1, 2) * Random.Range(cristalSpawnZoneMin, cristalSpawnZoneMax);
+
+            GameObject cristalInstance = Instantiate(cristalPrefab.gameObject);
             NetworkServer.Spawn(cristalInstance, NetworkServer.localConnection);
-            cristalInstance.transform.position = transform.position + Random.insideUnitSphere * 500;
+            cristalInstance.transform.position = new Vector3(xPos, yPos, zPos);
         }
-
-        Destroy(gameObject);
     }
 }
