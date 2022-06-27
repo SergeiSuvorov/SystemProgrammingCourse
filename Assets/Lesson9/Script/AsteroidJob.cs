@@ -28,7 +28,9 @@ public class AsteroidJob : MonoBehaviour
     [SerializeField] private Material _material;
     [SerializeField, Range(1, 20)] private int _depth = 4;
     //[SerializeField, Range(0, 360)] private int _speedRotation = 80;
-    [SerializeField, Range(0, 1)] private float _speedRotation = .125f;    [SerializeField, Range(0, 360)] private int _angleTurn = 80;
+    [SerializeField, Range(0, 1)] private float _speedRotation = .125f;
+
+    [SerializeField, Range(0, 360)] private int _angleTurn = 80;
     [SerializeField, Range(0, 360)] private int _radiusOffset = 4;
     [SerializeField] private int _radius = 8;
 
@@ -37,7 +39,8 @@ public class AsteroidJob : MonoBehaviour
     private const int _childCount = 5;
 
     private NativeArray<FractalPart>[] _parts;
-    private NativeArray<Matrix4x4>[] _matrices;
+    private NativeArray<Matrix4x4>[] _matrices;
+
     private ComputeBuffer[] _matricesBuffers;
     private static readonly int _matricesId = Shader.PropertyToID("_Matrices");
     private static MaterialPropertyBlock _propertyBlock;
@@ -58,7 +61,8 @@ public class AsteroidJob : MonoBehaviour
         quaternion.RotateZ(-.5f * PI),
         quaternion.RotateX(.5f * PI),
         quaternion.RotateX(-.5f * PI),
-    };
+    };
+
 
     [BurstCompile(CompileSynchronously = true)]
     private struct UpdateFractalLevelJob : IJobFor
@@ -78,27 +82,16 @@ public class AsteroidJob : MonoBehaviour
 
             part.SpinAngle += SpinAngleDelta;
             part.Ang += SpinAngleDelta ;
-            //part.WorldPosition = _radius * (new Vector3(Mathf.Sin(part.Ang * Mathf.Deg2Rad), Mathf.Cos(part.Ang * Mathf.Deg2Rad), 0f));
-            //part.WorldRotation = parent.WorldRotation * (part.Rotation * Quaternion.Euler(0f, part.SpinAngle, 0f));
+
             part.WorldPosition = (part.Radius) * (new Vector3(Mathf.Sin(part.Ang * Mathf.Deg2Rad), Mathf.Cos(part.Ang * Mathf.Deg2Rad), 0f));
             part.WorldRotation = parent.WorldRotation * (part.Rotation * Quaternion.Euler(0f, part.SpinAngle, 0f));
 
-            //part.WorldPosition = parent.WorldPosition + parent.WorldRotation * (_positionOffset * Scale * part.Direction);
             Parts[index] = part;
             Matrices[index] = Matrix4x4.TRS(part.WorldPosition, part.WorldRotation, part.Scale * Vector3.one);
         }
 
 
-    }
-
-    //private static readonly Quaternion[] _rotations =
-    //{
-    //    Quaternion.identity,
-    //    Quaternion.Euler(.0f, .0f, 90.0f),
-    //    Quaternion.Euler(.0f, .0f, -90.0f),
-    //    Quaternion.Euler(90.0f, .0f, .0f),
-    //    Quaternion.Euler(-90.0f, .0f, .0f)
-    //};
+    }
 
     private void OnEnable()
     {
@@ -137,7 +130,8 @@ public class AsteroidJob : MonoBehaviour
             _matricesBuffers[i].Release();
             _parts[i].Dispose();
             _matrices[i].Dispose();
-        }
+        }
+
 
         _parts = null;
         _matrices = null;
@@ -155,7 +149,7 @@ public class AsteroidJob : MonoBehaviour
     private FractalPart CreatePart(int levelIndex, int childIndex)
     {
         var ang = (360 / ((_depth-1) * _childCount)) * ((levelIndex ) * _childCount + (childIndex ));
-        //Debug.Log($"( Ang { ang}  levelIndex {levelIndex}  childIndex {childIndex})");
+
         return new FractalPart
         {
             Direction = _directions[childIndex],
@@ -170,7 +164,8 @@ public class AsteroidJob : MonoBehaviour
 
     private void Update()
     {
-        var spinAngelDelta = _speedRotation * PI * Time.deltaTime;
+        var spinAngelDelta = _speedRotation * PI * Time.deltaTime;
+
         var rootPart = _parts[0][0];
         rootPart.SpinAngle += spinAngelDelta;
         var deltaRotation = Quaternion.Euler(.0f, rootPart.SpinAngle, .0f);

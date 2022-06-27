@@ -5,17 +5,17 @@ using Mirror;
 
 public class PlanetSpawner : NetworkBehaviour
 {
-    [SerializeField] PlanetOrbit _planetPrefab;
-
-    public override void OnStartServer()
+    public static void Spawn(PlanetsSpawnSettings planetSpawnSettins)
     {
-        base.OnStartServer();
+        var planets = planetSpawnSettins.Planets;
+        foreach (var planetData in planets)
+        {
+            var planetOrbit = PlanetOrbit.Instantiate(planetData.planetOrbit);
+            
+            planetOrbit.Init(planetData);
+            NetworkServer.Spawn(planetOrbit.gameObject);
 
-        GameObject planetInstance = Instantiate(_planetPrefab.gameObject);
-       
-        NetworkServer.Spawn(planetInstance, NetworkServer.localConnection);
-        planetInstance.transform.position = transform.position;
-
-        Destroy(gameObject);
+        }
     }
+
 }

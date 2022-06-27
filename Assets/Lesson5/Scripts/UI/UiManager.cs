@@ -12,6 +12,7 @@ public class UiManager : NetworkBehaviour
     [SerializeField] private Text _textField;
     [SerializeField] private GameObject _canvas;
  
+    public InputField InputField => _inputField;
     public void Init(ShipController shipController)
     {
         shipController.onStartAuthority += DeactivateInputField;
@@ -32,9 +33,12 @@ public class UiManager : NetworkBehaviour
         var networkManager = (SolarSystemNetworkManager)NetworkManager.singleton;
         var gameResult = networkManager.ResultTable;
         var keys = gameResult.Keys;
+        Debug.Log(keys.Count);
         string result = "                                   Result             "+ "\n" + "\n" + "\n" + "\n";
         foreach (ShipController ship in keys)
         {
+            Debug.Log(ship.gameObject ==null);
+            Debug.Log( ship.gameObject.name) ; 
             result += ship.gameObject.name + "         " + gameResult[ship] + "\n";
         }
 
@@ -42,10 +46,17 @@ public class UiManager : NetworkBehaviour
         _textField.text = result;
         RpcShowGameResult(result);
     }
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        var networkManager = (SolarSystemNetworkManager)NetworkManager.singleton;
+        networkManager._inputField = _inputField;
 
+    }
     private void DeactivateInputField()
     {
         _inputField.gameObject.SetActive(false);
+       
     }
 
     private void ActivateInputField()
@@ -61,8 +72,9 @@ public class UiManager : NetworkBehaviour
     private void CmdInit(ShipController shipController)
     {
         var networkManager = (SolarSystemNetworkManager)NetworkManager.singleton;
-        Debug.Log("UI manager " + networkManager == null);
-        Debug.Log("shipController " + shipController.name);
+        //Debug.Log("UI manager " + networkManager == null);
+        //Debug.Log("shipController " + shipController.name);
         networkManager.onGameEnd += ShowGameResult;
+        networkManager._inputField = _inputField  ;
     }
 }

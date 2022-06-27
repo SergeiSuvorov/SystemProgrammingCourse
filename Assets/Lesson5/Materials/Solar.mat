@@ -93,10 +93,11 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.990566, g: 0.56439346, b: 0, a: 1}
-    - _Color: {r: 0.990566, g: 0.56439346, b: 0, a: 1}
+    - _Color: {r: 0.98378825, g: 0.990566, b: 0.042052314, a: 1}
     - _Emission: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 7.3772106, g: 0.8497311, b: 0, a: 1}
     - _GroundColor: {r: 1, g: 1, b: 1, a: 1}
     - _MountainColor: {r: 1, g: 1, b: 1, a: 1}
     - _SeaColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  m_BuildTextureStacks: []

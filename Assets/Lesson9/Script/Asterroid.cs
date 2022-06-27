@@ -1,19 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst;
-using Unity.Collections;
-using Unity.Jobs;
-using UnityEngine;
-using static Unity.Mathematics.math;
-using float4x4 = Unity.Mathematics.float4x4;
-using quaternion = Unity.Mathematics.quaternion;
+﻿using UnityEngine;
 
 public class Asterroid : MonoBehaviour
 {
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
 
-    [SerializeField, Range(1, 8)] private int _depth = 4;
+    [SerializeField, Range(1, 8)] private int _depth = 4;
+
     [SerializeField, Range(1, 360)] private int _rotationSpeed;
 
     [SerializeField, Range(1, 360)] private int _angleOfset;
@@ -27,7 +20,8 @@ public class Asterroid : MonoBehaviour
     {
         public Transform Transform;
         public float Ang;
-    }
+    }
+
 
     private static readonly Vector3[] _directions = new Vector3[]
     {
@@ -92,7 +86,8 @@ public class Asterroid : MonoBehaviour
                 part.Transform.localPosition = parentTransform.localPosition + _positionOffset * (new Vector3(Mathf.Sin(part.Ang * Mathf.Deg2Rad), Mathf.Cos(part.Ang * Mathf.Deg2Rad), 0f));
                 levelParts[fpi] = part;
             }
-        }
+        }
+
     }
  
 private FractalPart CreatePart(int levelIndex, int childIndex, float scale)
@@ -111,6 +106,8 @@ private FractalPart CreatePart(int levelIndex, int childIndex, float scale)
         {
             Transform = go.transform,
             Ang = ang
-        };
-    }
+        };
+
+    }
+
 }

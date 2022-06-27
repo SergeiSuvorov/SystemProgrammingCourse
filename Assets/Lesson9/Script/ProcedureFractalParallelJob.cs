@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst;
+﻿using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using static Unity.Mathematics.math;
-using float4x4 = Unity.Mathematics.float4x4;
-using quaternion = Unity.Mathematics.quaternion;
 
 public class ProcedureFractalParallelJob : MonoBehaviour
 {
@@ -23,7 +19,9 @@ public class ProcedureFractalParallelJob : MonoBehaviour
     [SerializeField] private Mesh _mesh;
     [SerializeField] private Material _material;
     [SerializeField, Range(1, 8)] private int _depth = 4;
-    [SerializeField, Range(0, 1)] private float _speedRotation = .125f;    [SerializeField, Range(0, 360)] private int _angleTurn = 80;
+    [SerializeField, Range(0, 1)] private float _speedRotation = .125f;
+
+    [SerializeField, Range(0, 360)] private int _angleTurn = 80;
     [SerializeField] private int _radius = 8;
 
     private const float _positionOffset = 2.5f;
@@ -31,7 +29,8 @@ public class ProcedureFractalParallelJob : MonoBehaviour
     private const int _childCount = 5;
 
     private NativeArray<FractalPart>[] _parts;
-    private NativeArray<Matrix4x4>[] _matrices;
+    private NativeArray<Matrix4x4>[] _matrices;
+
     private ComputeBuffer[] _matricesBuffers;
     private static readonly int _matricesId = Shader.PropertyToID("_Matrices");
     private static MaterialPropertyBlock _propertyBlock;
@@ -90,7 +89,8 @@ public class ProcedureFractalParallelJob : MonoBehaviour
         _childCount)
         {
             _parts[i] = new NativeArray<FractalPart>(length, Allocator.Persistent);
-            _matrices[i] = new NativeArray<Matrix4x4>(length, Allocator.Persistent);
+            _matrices[i] = new NativeArray<Matrix4x4>(length, Allocator.Persistent);
+
             _matricesBuffers[i] = new ComputeBuffer(length, stride);
         }
 
@@ -119,7 +119,8 @@ public class ProcedureFractalParallelJob : MonoBehaviour
             _matricesBuffers[i].Release();
             _parts[i].Dispose();
             _matrices[i].Dispose();
-        }
+        }
+
 
         _parts = null;
         _matrices = null;
@@ -143,7 +144,8 @@ public class ProcedureFractalParallelJob : MonoBehaviour
 
     private void Update()
     {
-        var spinAngelDelta = _speedRotation * PI * Time.deltaTime;
+        var spinAngelDelta = _speedRotation * PI * Time.deltaTime;
+
         var rootPart = _parts[0][0];
         rootPart.SpinAngle += spinAngelDelta;
         var deltaRotation = Quaternion.Euler(.0f, rootPart.SpinAngle, .0f);
