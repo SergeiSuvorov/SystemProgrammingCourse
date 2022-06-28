@@ -18,6 +18,8 @@ MonoBehaviour:
     planetOrbit: {fileID: 4347549306872751265, guid: 868275c125cc4b24c997772450433855,
       type: 3}
     radius: 0
+    speed: 0
+    scale: 100
     seed: 0
     planetColorGroup:
       GroundColor: {r: 1, g: 1, b: 0, a: 0.99215686}
@@ -32,6 +34,8 @@ MonoBehaviour:
     planetOrbit: {fileID: 8117965459637355514, guid: 79d2071e533928d40b8039ee0d1d8e14,
       type: 3}
     radius: 100
+    speed: 1
+    scale: 10
     seed: 0
     planetColorGroup:
       GroundColor: {r: 0.066037714, g: 0.066037714, b: 0.061365236, a: 0.98039216}
@@ -46,6 +50,8 @@ MonoBehaviour:
     planetOrbit: {fileID: 8117965459637355514, guid: 79d2071e533928d40b8039ee0d1d8e14,
       type: 3}
     radius: 300
+    speed: 0.5
+    scale: 25
     seed: 100
     planetColorGroup:
       GroundColor: {r: 0.9622642, g: 0.06808472, b: 0.06808472, a: 0.972549}
@@ -60,6 +66,8 @@ MonoBehaviour:
     planetOrbit: {fileID: 8117965459637355514, guid: 79d2071e533928d40b8039ee0d1d8e14,
       type: 3}
     radius: 500
+    speed: 0.4
+    scale: 25
     seed: 0
     planetColorGroup:
       GroundColor: {r: 0, g: 0, b: 0, a: 0}
@@ -70,17 +78,19 @@ MonoBehaviour:
     hasPlanetRing: 0
     PlanetRingColor: {r: 0, g: 0, b: 0, a: 0}
   _currentBaseRecords:
-    _id: 3
-    Name: Castom 3
-    planetOrbit: {fileID: 8117965459637355514, guid: 79d2071e533928d40b8039ee0d1d8e14,
+    _id: 0
+    Name: Solar
+    planetOrbit: {fileID: 4347549306872751265, guid: 868275c125cc4b24c997772450433855,
       type: 3}
-    radius: 500
+    radius: 0
+    speed: 0
+    scale: 100
     seed: 0
     planetColorGroup:
-      GroundColor: {r: 0, g: 0, b: 0, a: 0}
-      SeaColor: {r: 0, g: 0, b: 0, a: 0}
-      MountainColor: {r: 0, g: 0, b: 0, a: 0}
-    hasAtmosphere: 1
-    AtmosphereColor: {r: 0.9056604, g: 0.07262372, b: 0.07262372, a: 1}
+      GroundColor: {r: 1, g: 1, b: 0, a: 0.99215686}
+      SeaColor: {r: 1, g: 1, b: 0, a: 0.98039216}
+      MountainColor: {r: 1, g: 1, b: 0, a: 0.99215686}
+    hasAtmosphere: 0
+    AtmosphereColor: {r: 0, g: 0, b: 0, a: 0}
     hasPlanetRing: 0
     PlanetRingColor: {r: 0, g: 0, b: 0, a: 0}

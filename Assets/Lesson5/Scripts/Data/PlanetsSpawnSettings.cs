@@ -71,6 +71,8 @@ public class PlanetData
     [Header("PlanetOrbitConfiguration")]
     [SerializeField] public PlanetOrbit planetOrbit;
     [SerializeField] public float radius;
+    [SerializeField] public float speed;
+    [SerializeField] public int scale;
 
     [Header("CustomConfiguration")]
     public float seed;

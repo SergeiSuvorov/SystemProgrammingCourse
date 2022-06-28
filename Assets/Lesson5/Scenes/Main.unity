@@ -471,7 +471,7 @@ MonoBehaviour:
   planetsSpawnSettings: {fileID: 11400000, guid: f366ec2f9274996499c37cc41a595836,
     type: 2}
   spaceShipSettings: {fileID: 11400000, guid: d738e91966f9b1e4eb92251c662818d1, type: 2}
-  spawnSettings: {fileID: 11400000, guid: 8fc0747b67ad23b4197986422c2f5f54, type: 2}
+  _spawnSettings: {fileID: 11400000, guid: 8fc0747b67ad23b4197986422c2f5f54, type: 2}
   networkManagerPrefab: {fileID: 8134873690687955293, guid: 3d9e580ae818c374c97e6ae323bccf1a,
     type: 3}
   uiManager: {fileID: 1997919881}

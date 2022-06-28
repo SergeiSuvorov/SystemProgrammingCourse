@@ -7,10 +7,13 @@ public class Root : MonoBehaviour
 {
     public PlanetsSpawnSettings planetsSpawnSettings;
     public SpaceShipSettings spaceShipSettings;
-    public SpawnSettings spawnSettings;
+    public SpawnSettings _spawnSettings;
     public SolarSystemNetworkManager networkManagerPrefab;
     public UiManager uiManager;
+
+    [Space(20)]
     public List<Transform> spaceShipSpawnPoints;
+    
 
     void Start()
     {
@@ -24,8 +27,15 @@ public class Root : MonoBehaviour
     }
     private void SpawnPlanet()
     {
+        var spawnSettings = Instantiate(_spawnSettings);
         PlanetSpawner.Spawn(Instantiate(planetsSpawnSettings));
-        CristalSpawner.Spawn(Instantiate(spawnSettings));
+        CristalSpawner.Spawn(spawnSettings);
+
+
+        var asteroidOrbit = AsteroidOrbit.Instantiate(spawnSettings.AsteroidOrbit);
+
+        asteroidOrbit.Init(spawnSettings.AsteroidRadius, spawnSettings.AsteroidRadiusOffset, spawnSettings.AsteroidSpeed , spawnSettings.MaxScale, spawnSettings.Depth);
+        NetworkServer.Spawn(asteroidOrbit.gameObject);
     }
 }
 

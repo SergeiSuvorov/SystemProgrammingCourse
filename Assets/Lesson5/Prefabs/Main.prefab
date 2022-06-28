@@ -71,6 +71,7 @@ MonoBehaviour:
   - {fileID: 7834667625286995037, guid: 6ddc5f437a3b6e342ac6fe8817619382, type: 3}
   - {fileID: 4347549306872751272, guid: 868275c125cc4b24c997772450433855, type: 3}
   - {fileID: 8117965459637355512, guid: 79d2071e533928d40b8039ee0d1d8e14, type: 3}
+  - {fileID: 4285605624680700669, guid: 1cba7c3a7c96251419e99a5aa9973efe, type: 3}
   _inputField: {fileID: 0}
   _planetSpawner: {fileID: 0}
   _spawnPosition: {x: 2900, y: 2900, z: 0}
