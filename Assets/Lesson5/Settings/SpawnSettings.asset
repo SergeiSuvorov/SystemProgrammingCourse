@@ -17,3 +17,10 @@ MonoBehaviour:
   StarSpawnZoneMax: 500
   StarPrefab: {fileID: 7834667625286995038, guid: 6ddc5f437a3b6e342ac6fe8817619382,
     type: 3}
+  AsteroidOrbit: {fileID: 892507224640791636, guid: 1cba7c3a7c96251419e99a5aa9973efe,
+    type: 3}
+  Depth: 4
+  AsteroidSpeed: 3.33
+  AsteroidRadius: 100
+  AsteroidRadiusOffset: 20
+  MaxScale: 20

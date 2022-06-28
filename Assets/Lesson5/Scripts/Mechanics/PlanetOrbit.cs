@@ -28,6 +28,8 @@ public class PlanetOrbit : NetworkBehaviour
     [SyncVar] private bool _hasAtmosphere;
     [SyncVar] private float _seed;
     [SyncVar] private string _name;
+    [SyncVar] private float _speed;
+    [SyncVar] private int _scale;
 
 
 
@@ -58,6 +60,8 @@ public class PlanetOrbit : NetworkBehaviour
         _hasAtmosphere = planetData.hasAtmosphere;
         _atmosphereColor = planetData.AtmosphereColor;
         _planetRingColor = planetData.PlanetRingColor;
+        _speed = planetData.speed;
+        _scale = planetData.scale;
 
     }
 
@@ -83,6 +87,16 @@ public class PlanetOrbit : NetworkBehaviour
             _ringObject.SetActive(_hasRing);
 
         name = _name;
+        if (_speed<0.01)
+        {
+            _speed = 0.3f;
+        }
+
+        if (_scale <=0)
+        {
+            _scale=1;
+        }
+        transform.localScale= new Vector3(_scale, _scale, _scale);
 
         var meshRenderer = GetComponent<MeshRenderer>();
 
@@ -182,7 +196,7 @@ public class PlanetOrbit : NetworkBehaviour
             return;
         //UpdateForNewPlayer();
 
-        transform.position = Vector3.SmoothDamp(transform.position, serverPosition, ref currentPositionSmoothVelocity, smoothTime);
+        transform.position = Vector3.SmoothDamp(transform.position, serverPosition, ref currentPositionSmoothVelocity, _speed);
         transform.rotation = Quaternion.Euler(serverEulers);
 
     }
@@ -193,4 +207,6 @@ public class PlanetOrbit : NetworkBehaviour
         _objectLabel?.DrawLabel();
     }
 }
+
+
 
