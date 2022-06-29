@@ -136,6 +136,9 @@ public class AsteroidOrbit : NetworkBehaviour
 
     private void CreateAsteroids()
     {
+        if (_parts != null || _matrices != null || _matricesBuffers != null)
+            return;
+
         _parts = new NativeArray<FractalPart>[_depth];
         _matrices = new NativeArray<Matrix4x4>[_depth];
         _matricesBuffers = new ComputeBuffer[_depth];
