@@ -211,7 +211,7 @@ public class AsteroidOrbit : NetworkBehaviour
         var rootPart = _parts[0][0];
         rootPart.SpinAngle = _spinAngelResult;
         var deltaRotation = Quaternion.Euler(.0f, rootPart.SpinAngle, .0f);
-        rootPart.WorldRotation = rootPart.Rotation * deltaRotation;
+        rootPart.WorldRotation = deltaRotation;
         _parts[0][0] = rootPart;
         _matrices[0][0] = Matrix4x4.TRS(rootPart.WorldPosition, rootPart.WorldRotation, Vector3.one);
         var scale = 1.0f;
